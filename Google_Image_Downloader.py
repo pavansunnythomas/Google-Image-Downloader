@@ -11,6 +11,7 @@ browser = webdriver.Firefox()
 
 # It opens the URL in the browser.
 browser.get('https://www.google.com/')
+browser.execute_script("document.body.style.zoom='150%'")
 
 #to get into the images page to download images and
 #get_attribute fetches the URL of the Images and
@@ -24,6 +25,8 @@ search = browser.find_element_by_name('q')
 
 # sending query and enter
 search.send_keys(queryForSearch,Keys.ENTER)
+browser.execute_script('document.body.style.MozTransform = "scale(3.0)";')
+browser.execute_script('document.body.style.MozTransformOrigin = "0 0";')
 
 value = 0
 for i in range(10):
@@ -34,29 +37,45 @@ for i in range(10):
 elem1 = browser.find_element_by_id("islmp")
 sub = elem1.find_elements_by_tag_name('img')
 
-
-while(len(sub)< limit):
+now = 0
+counter =0
+while(len(sub)< (limit*3)):
   browser.execute_script("scrollBy("+ str(value) +",+1000);")
   value += 1000
   time.sleep(0.1)
+  print(f"about {len(sub)} images captured")
+  if now == len(sub):
+    counter+=1
+  else:
+    counter = 0
+  if counter>20:
+    print("available pictures to download :",len(sub))
+    break
+  now = len(sub)
   sub = elem1.find_elements_by_tag_name('img')
 
 try:
   os.mkdir(queryForSearch)
 except Exception as p:
-  print(p)
+  print(p,"\nOverwriting")
+
 count = 0
-while(count<=limit):
+for i in sub:
   src = i.get_attribute('src')
+  count+=1
+  if count>limit:
+    break
   if src != None:
     src  = str(src)
-    count+=1
-    print("Image Source : ",src)
-    print("Image no : ",count)
+    print("downloaded Image no : ",count)
     try:
       urllib.request.urlretrieve(src, os.path.join(f'{queryForSearch}','image'+str(count)+'.jpg'))
     except Exception:
-      print(f'could not print Image {count}\n tring alternative pic ')
       count-=1
+      print(f'could not print Image {count}\n tring alternative pic ')
+  else:
+    count-=1
+    print(f'could not print Image {count}\n tring alternative pic ')
 
+print("Total pictures downloaded : ",(count-1))
 browser.close()
