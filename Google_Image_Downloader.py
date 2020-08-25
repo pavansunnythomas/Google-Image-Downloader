@@ -25,8 +25,6 @@ search = browser.find_element_by_name('q')
 
 # sending query and enter
 search.send_keys(queryForSearch,Keys.ENTER)
-browser.execute_script('document.body.style.MozTransform = "scale(3.0)";')
-browser.execute_script('document.body.style.MozTransformOrigin = "0 0";')
 
 value = 0
 for i in range(10):
