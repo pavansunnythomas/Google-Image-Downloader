@@ -12,6 +12,8 @@ install geckodriver for firefox using:
 
 this will grab need no of images from google and will create a diectory with the query name,
 
+Just run by :- python Google_Image_Downloader.py
+
 Thank you and hope you great in your endevour
 
 
